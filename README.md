@@ -11,3 +11,22 @@ The http server is running with Akka HTTP and Akka Streams is used to parse the 
 ## Usage
 
 $ sbt run
+
+Example : http://localhost:8080/stat?source=timing-log.log&reducer=http&statistic=sum
+
+which will return something like : 
+
+```
+OPTIONS : 6
+GET : 698387
+HEAD : 348
+POST : 66898
+```
+
+
+
+## Technologies
+
+* Scala
+* Akka HTTP
+* Akka Streams

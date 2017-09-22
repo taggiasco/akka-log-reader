@@ -23,21 +23,15 @@ trait Routes {
   
   
   private val statRoutes = {
-    post {
-      formFields(
-        ('source ?, 'filter ?, 'reducer ?, 'statistic ?)
+    get {
+      parameters(
+        ('source, 'pathfilter ?, 'methodfilter ?, 'reducer, 'statistic)
       ).as(StatCall) { statCall => {
         complete {
           statCall.execute().map(s => {
-            HttpEntity(ContentTypes.`text/plain(UTF-8)`, s)
+            HttpEntity(ContentTypes.`text/html(UTF-8)`, s.mkString("<br/>"))
           })
         }
-//        complete(
-//          HttpEntity(
-//            ContentTypes.`text/plain(UTF-8)`,
-//            numbers.map(n => ByteString(s"$n\n"))
-//          )
-//        )
       }}
     }
   }

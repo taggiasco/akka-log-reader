@@ -5,6 +5,25 @@ import scala.util.matching.Regex
 
 object Reducer {
   
+  private lazy val reducers: Map[String, LogEntry => Particularity] =
+    Map(
+      "identity" -> identity,
+      "http"     -> httpMethod,
+      "status"   -> status,
+      "path"     -> path,
+      "pathonly" -> pathOnly,
+      "datehour" -> dateHour
+    )
+  
+  
+  def list() = reducers.keys.toList
+  
+  def find(name: String): Option[LogEntry => Particularity] = {
+    reducers.get(name)
+  }
+  
+  
+  
   val identity: LogEntry => Particularity = logEntry => {
     IdentityParticularity()
   }
@@ -26,6 +45,11 @@ object Reducer {
         case FullURL(path) => path
       }
     )
+  }
+  
+  
+  val path: LogEntry => Particularity = logEntry => {
+    SingleParticularity(logEntry.url)
   }
   
   

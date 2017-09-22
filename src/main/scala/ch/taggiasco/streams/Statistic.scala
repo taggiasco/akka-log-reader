@@ -7,6 +7,26 @@ import scala.concurrent.ExecutionContext
 
 object Statistic {
   
+  private val stats: Map[String, ExecutionContext => Sink[(Particularity, LogEntry), Future[Map[Particularity, Int]]]] =
+    Map(
+      "sum"           -> (exCtx => sumSink),
+      "average"       -> (exCtx => avgSink()(exCtx)),
+      "worse"         -> (exCtx => worseSink),
+      "percentile 95" -> (exCtx => percentile(95)(exCtx)),
+      "percentile 90" -> (exCtx => percentile(90)(exCtx))
+    )
+  
+  
+  def list() = stats.keys.toList
+  
+  def find(name: String): Option[ExecutionContext => Sink[(Particularity, LogEntry), Future[Map[Particularity, Int]]]] = {
+    stats.get(name)
+  }
+  
+  
+  
+  
+  
   val sumSink: Sink[(Particularity, LogEntry), Future[Map[Particularity, Int]]] = {
     Sink.fold(Map.empty[Particularity, Int])(
       (acc: Map[Particularity, Int], dataLogEntry: (Particularity, LogEntry)) => {
